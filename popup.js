@@ -46,7 +46,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
           // Append the image element to the popup
           
-          const popupDiv = document.getElementById('popup');
+          const popupDiv = document.getElementById('focused-image');
           popupDiv.appendChild(imgElement);
           
           
@@ -61,22 +61,64 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             resultElement.textContent = JSON.stringify(result, null, 2);
             popupDiv.appendChild(resultElement);
             */
+
+            // Append element to results-display div
+            const resultsDisplayDiv = document.getElementById('results-display');
+
             const images = result.visual_matches;
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 10; i++) {
+              // Create a container div for each item
+              const itemContainer = document.createElement('div');
+              itemContainer.classList.add('flex', 'bg-white', 'rounded', 'p-4', 'mb-4'); // Add Tailwind classes for styling
+
+              // Create a div for the left section (image)
+              const leftSection = document.createElement('div');
+
+              // Create an image element and set its attributes
               const imageElement = document.createElement('img');
               imageElement.src = images[i].thumbnail;
-              popupDiv.appendChild(imageElement);
-              //Also add the source icon of the image
+              imageElement.classList.add('w-32', 'h-auto', 'mr-40'); // Add Tailwind classes for styling
+              leftSection.appendChild(imageElement);
+
+              // Append the left section to the item container
+              itemContainer.appendChild(leftSection);
+
+              // Create a div for the right section (sourceIcon, price, and button)
+              const rightSection = document.createElement('div');
+
+              // Create an icon for the image source
               const sourceIcon = document.createElement('img');
               sourceIcon.src = images[i].source_icon;
-              popupDiv.appendChild(sourceIcon);
+              sourceIcon.classList.add('w-6', 'h-6', 'mb-2'); // Add Tailwind classes for styling
+              rightSection.appendChild(sourceIcon);
 
-              // Also add the link of the source found in the link property
-              const linkElement = document.createElement('a');
-              linkElement.href = images[i].link;
-              linkElement.textContent = images[i].link;
-              popupDiv.appendChild(linkElement);
+              // Create a paragraph element for the price
+              const priceElement = document.createElement('p');
+              if (images[i].price && images[i].price.value) {
+                priceElement.textContent = images[i].price.value;
+              } else {
+                priceElement.textContent = 'No price found';
+              }
+              priceElement.classList.add('text-blue-500', 'text-center', 'mb-2'); // Add Tailwind classes for styling
+              rightSection.appendChild(priceElement);
+
+              // Create a button element for the link
+              const linkButton = document.createElement('button');
+              linkButton.textContent = 'Open Link';
+              linkButton.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-white', 'py-2', 'px-4', 'rounded', 'text-center', 'cursor-pointer');
+              linkButton.addEventListener('click', () => {
+                // Open the link in a new tab when the button is clicked
+                window.open(images[i].link, '_blank');
+              });
+              rightSection.appendChild(linkButton);
+
+              // Append the right section to the item container
+              itemContainer.appendChild(rightSection);
+
+              // Append the item container to the results display div
+              resultsDisplayDiv.appendChild(itemContainer);
             }
+
           });
           
 

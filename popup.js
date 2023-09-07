@@ -134,8 +134,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const noProductMessage = document.createElement('p');
           noProductMessage.textContent = 'No product found';
 
+          // Apply Tailwind CSS classes for styling
+          noProductMessage.classList.add('text-red-500', 'text-center', 'font-semibold', 'text-lg', 'mt-4');
+
           // Append the message to the popup
-          const popupDiv = document.getElementById('popup');
+          const popupDiv = document.getElementById('popup-header');
           popupDiv.appendChild(noProductMessage);
         }
       } else {
